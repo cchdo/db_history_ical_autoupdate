@@ -113,7 +113,6 @@ $scan_range[1].downto($scan_range[0]) do |date|
             end #evts.each
         end #unless
     else
-        puts "No documents for today!"
         unless (evts = no_doc_evts_for(date)).empty?
             evts.each do |evt|
                 @entries << build_evt_no_doc(date, evt.Line, evt.ExpoCode,

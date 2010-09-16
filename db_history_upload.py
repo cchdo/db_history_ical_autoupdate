@@ -5,17 +5,25 @@ from __future__ import with_statement
 import sys
 sys.dont_write_bytecode = True
 #sys.path.insert(0, '/Users/ayshen/work/repo/gdata-2.0.11/src')
-with open('libgdata.path', 'r') as pathfile:
-    sys.path.insert(0, pathfile.readline().strip())
+#with open('libgdata.path', 'r') as pathfile:
+#    sys.path.insert(0, pathfile.readline().strip())
 import datetime
 import urllib
 
-import atom
-import atom.service
-import gdata
-import gdata.calendar as gcal
-import gdata.calendar.data as gcal_data
-import gdata.calendar.service as gcal_service
+try:
+    import atom
+    import atom.service
+    import gdata
+    import gdata.calendar as gcal
+    import gdata.calendar.data as gcal_data
+    import gdata.calendar.service as gcal_service
+except ImportError:
+    print >> sys.stderr, """\
+Python GData library is not installed.
+You can obtain the latest GData python client from
+    http://code.google.com/p/gdata-python-client/downloads/list
+"""
+    sys.exit(16)
 
 
 def Authenticate (email=None, password=None):

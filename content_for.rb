@@ -32,7 +32,7 @@ def content_for_submit (sub)
     [
     "Filename: #{sub.file}",
     "Who: #{sub.name or "Anonymous"}, #{sub.institute or "independent"}",
-    "Note: #{if sub.note then escape_note(sub.note) else "" end}"
+    "Note: #{if sub.notes then escape_note(sub.notes) else "" end}"
     ].join("\n")
 end
 
