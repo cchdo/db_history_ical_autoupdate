@@ -6,6 +6,10 @@ require 'tempfile'
 require 'rubygems'
 require 'active_record'
 
+def dirname (file)
+    (File.expand_path(file))[/.+\//]
+end
+$:.unshift dirname __FILE__
 require 'build_entry'
 require 'build_query'
 require 'content_for'
