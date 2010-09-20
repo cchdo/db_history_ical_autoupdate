@@ -190,7 +190,9 @@ BEGIN:VCALENDAR
 PRODID:-//CCHDO DB_HISTORY 1.0//EN
 VERSION:2.0
 """ +"\n\n".join(failed) + "\nEND:VCALENDAR"
-    if len(sys.argv[2:]) == 0:
+    if len(failed) == 0:
+        pass
+    elif len(sys.argv[2:]) == 0:
         print faillog
     else:
         with open(sys.argv[2], 'w') as f:
