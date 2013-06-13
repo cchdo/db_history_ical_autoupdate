@@ -24,7 +24,7 @@ parse_args()
 
 
 @database_configuration = {}
-File.open('database.conf', 'r') do |f|
+File.open((dirname __FILE__) + '/database.conf', 'r') do |f|
     f.each do |line|
         line =~ /^(.+):(.+)$/
         @database_configuration[$1] = $2
@@ -137,6 +137,6 @@ File.open("/tmp/dbh_#{Date.today.strftime($SHORT_DATE_F)}.batch", "w+") do |f|
     f.write(@entries.join("\n\n"))
     f.seek(0)
     outfile = "/Users/ayshen/dbhistory_err_#{Date.today.strftime($SHORT_DATE_F)}.ics"
-    `python db_history_upload.py #{f.path} #{outfile}`
+    `python #{dirname __FILE__}/db_history_upload.py #{f.path} #{outfile}`
 end
 #puts @entries.join("\n\n")

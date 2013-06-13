@@ -95,19 +95,33 @@ content_line: STR ;
     return events
 
 
-def GetCalendarBatchURI (caltype):
+def GetCalendarBatchURI (calserv, caltype, ):
     """Get a batch URI for a specific calendar type.
 
     NB. this function MUST NOT be used with any other service.
     """
-    CALENDARS = {
-    "DOC_EVT": "33ou6hmvq1rot0ermcrsj4holc@group.calendar.google.com",
-    "DOC_NO_EVT": "74n2plv4nfclljktijj7a42ujo@group.calendar.google.com",
-    "EVT_NO_DOC": "dhu4ok0kcf13fp0c562ner5514@group.calendar.google.com",
-    "MAP": "el92aob7iuo6f24bbi3ffsjvg4@group.calendar.google.com",
-    "SUBMIT": "i3lkver56mse5putkv74nh4gu0@group.calendar.google.com",
+    #CALENDARS = {
+    #"DOC_EVT": "33ou6hmvq1rot0ermcrsj4holc@group.calendar.google.com",
+    #"DOC_NO_EVT": "74n2plv4nfclljktijj7a42ujo@group.calendar.google.com",
+    #"EVT_NO_DOC": "dhu4ok0kcf13fp0c562ner5514@group.calendar.google.com",
+    #"MAP": "el92aob7iuo6f24bbi3ffsjvg4@group.calendar.google.com",
+    #"SUBMIT": "i3lkver56mse5putkv74nh4gu0@group.calendar.google.com",
+    #}
+    #return "/calendar/feeds/%s/private/full/batch" % CALENDARS[caltype]
+    CAL_TITLES = {
+    "DOC_EVT": "Documents with events",
+    "DOC_NO_EVT": "Documents without events",
+    "EVT_NO_DOC": "Events without documents",
+    "MAP": "Map Creation Events",
+    "SUBMIT": "Submissions",
     }
-    return "/calendar/feeds/%s/private/full/batch" % CALENDARS[caltype]
+    all_cal_feeds = calserv.GetOwnCalendarsFeed()
+    def is_requested_cal (entry):
+        return CAL_TITLES[caltype] in entry.title.text
+    href = filter(is_requested_cal, all_cal_feeds.entry)[0].GetEditLink().href
+    href = '/calendar/feeds/%s/private/full/batch' % href[href.rfind('/') + 1:]
+    print href
+    return href
 
 
 def ErrorStringForEvent (event):
@@ -148,9 +162,10 @@ def AddEventBatch (calserv, batch):
     response_feeds = {}
     failed = []
     for feedname in request_feeds:
+        batch_uri = GetCalendarBatchURI(calserv, feedname)
+        print >> sys.stderr, batch_uri
         response_feeds[feedname] = calserv.ExecuteBatch(
-                request_feeds[feedname],
-                GetCalendarBatchURI(feedname))
+                request_feeds[feedname], batch_uri)
         if len(response_feeds[feedname].entry) == 1 and \
                 not response_feeds[feedname].entry[0].batch_status:
             print >> sys.stderr, "I think something went horribly wrong!"
